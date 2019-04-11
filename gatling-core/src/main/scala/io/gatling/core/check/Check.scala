@@ -73,6 +73,8 @@ case class CheckBase[R, P, X](
         if (cachedValue == null) {
           val prepared = preparer(response)
           preparedCache.put(preparer, prepared)
+          // Uncommenting this seem to make the test to pass:
+          //println("to cache:" + prepared)
           prepared
         } else {
           cachedValue.asInstanceOf[Validation[P]]

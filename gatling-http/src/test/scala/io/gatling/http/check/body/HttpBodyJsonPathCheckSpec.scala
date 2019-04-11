@@ -70,6 +70,16 @@ class HttpBodyJsonPathCheckSpec extends BaseSpec with ValidationValues with Core
     jsonPath("$.street").ofType[Map[String, Any]].find.exists.check(response, session).succeeded shouldBe CheckResult(Some(Map("book" -> "On the street")), None)
   }
 
+  it should "find all by wildcard" in {
+    val response = mockResponse(storeJson)
+    jsonPath("$.*.book").findAll.exists.check(response, session).succeeded shouldBe CheckResult(Some(Vector("In store", "On the street")), None)
+  }
+
+  it should "find all by recursive descent" in {
+    val response = mockResponse(storeJson)
+    jsonPath("$..book").findAll.exists.check(response, session).succeeded shouldBe CheckResult(Some(Vector("In store", "On the street")), None)
+  }
+
   it should "find a null attribute value when expected type is String" in {
     val response = mockResponse("""{"foo": null}""")
     jsonPath("$.foo").ofType[String].find.exists.check(response, session).succeeded shouldBe CheckResult(Some(null), None)
